@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph.xml"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/arMappingFragment"
+        android:name="de.morhenn.ar_localization.ar.mapping.ArMappingFragment"
+        android:label="ArMappingFragment">
+    </fragment>
+    <fragment
+        android:id="@+id/arLocalizingFragment"
+        android:name="de.morhenn.ar_localization.ar.localizing.ArLocalizingFragment"
+        android:label="ArLocalizingFragment">
+    </fragment>
+    <fragment
+        android:id="@+id/floorPlanListFragment"
+        android:name="de.morhenn.ar_localization.floorPlan.FloorPlanListFragment"
+        android:label="FloorPlanListFragment">
+        <action
+            android:id="@+id/action_floorPlanListFragment_to_arMappingFragment"
+            app:destination="@id/arMappingFragment" />
+        <action
+            android:id="@+id/action_floorPlanListFragment_to_arLocalizingFragment"
+            app:destination="@id/arLocalizingFragment" />
+        <action
+            android:id="@+id/action_floorPlanListFragment_to_anchorTrackingTestFragment"
+            app:destination="@id/anchorTrackingTestFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="de.morhenn.ar_localization.LoginFragment"
+        android:label="LoginFragment">
+        <action
+            android:id="@+id/action_loginFragment_to_floorPlanListFragment"
+            app:destination="@id/floorPlanListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/anchorTrackingTestFragment"
+        android:name="de.morhenn.ar_localization.ar.AnchorTrackingTestFragment"
+        android:label="AnchorTrackingTestFragment" />
+
+</navigation>

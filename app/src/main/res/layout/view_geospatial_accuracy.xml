@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/view_geospatial_accuracy"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/accuracy_collapsed_view"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_marginBottom="60dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/accuracy_latitude"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_margin="1dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/latitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:text="LATITUDE : " />
+
+        <TextView
+            android:id="@+id/view_acc_latitude_value"
+            android:layout_width="250dp"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="1dp"
+            android:gravity="center"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/accuracy_longitude"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_margin="1dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/longitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:text="LONGITUDE : " />
+
+        <TextView
+            android:id="@+id/view_acc_longitude_value"
+            android:layout_width="250dp"
+            android:layout_height="24dp"
+            android:layout_marginHorizontal="1dp"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="11sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/accuracy_Info"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/rsrptext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:text="RSRP : " />
+
+        <TextView
+            android:id="@+id/rsrpvalue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/rsrqtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:text="RSRQ : " />
+
+        <TextView
+            android:id="@+id/rsrqvalue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/sinrtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:text="SINR : " />
+
+        <TextView
+            android:id="@+id/sinrvalue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

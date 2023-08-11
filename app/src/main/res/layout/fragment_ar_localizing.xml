@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <de.morhenn.ar_localization.ar.GeospatialAccuracyView
+        android:id="@+id/ar_localizing_geospatial_acc_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:elevation="4dp" />
+
+    <TextView
+        android:id="@+id/ar_localizing_hint_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:background="@drawable/background_hint"
+        android:elevation="5dp"
+        android:gravity="center_horizontal"
+        android:padding="4dp"
+        android:paddingHorizontal="12dp"
+        android:text="@string/ar_localizing_hint_not_initialized"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_anchor="@id/ar_localizing_geospatial_acc_view"
+        app:layout_anchorGravity="bottom" />
+
+    <io.github.sceneview.ar.ArSceneView
+        android:id="@+id/sceneView_localizing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/ar_localizing_bottom_sheet"
+        style="?attr/bottomSheetStyle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/ar_localizing_progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:visibility="invisible"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/ar_localizing_bottom_sheet_divider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginVertical="4dp"
+                app:dividerColor="?attr/colorOnSurface"
+                app:dividerInsetEnd="150dp"
+                app:dividerInsetStart="150dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ar_localizing_progress_bar" />
+
+            <ImageButton
+                android:id="@+id/ar_localizing_bottom_sheet_auto_mode_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/icon_button"
+                android:padding="4dp"
+                android:src="@drawable/ic_baseline_auto_mode_24"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ar_localizing_bottom_sheet_divider" />
+
+
+            <ImageButton
+                android:id="@+id/ar_localizing_bottom_sheet_geospatial_toggle_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/icon_button"
+                android:padding="4dp"
+                android:src="@drawable/ic_baseline_location_city_24"
+                app:layout_constraintLeft_toRightOf="@id/ar_localizing_bottom_sheet_auto_mode_button"
+                app:layout_constraintTop_toBottomOf="@id/ar_localizing_bottom_sheet_divider" />
+
+            <ImageButton
+                android:id="@+id/ar_localizing_bottom_sheet_cancel_resolve_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/icon_button"
+                android:padding="4dp"
+                android:src="@drawable/ic_outline_cancel_24"
+                android:visibility="gone"
+                app:layout_constraintRight_toLeftOf="@id/ar_localizing_bottom_sheet_select_floor_button"
+                app:layout_constraintTop_toBottomOf="@id/ar_localizing_bottom_sheet_divider" />
+
+            <ImageButton
+                android:id="@+id/ar_localizing_bottom_sheet_select_floor_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/icon_button"
+                android:padding="4dp"
+                android:src="@drawable/ic_baseline_altitude_24px"
+                app:layout_constraintRight_toLeftOf="@id/ar_localizing_bottom_sheet_select_anchor_button"
+                app:layout_constraintTop_toBottomOf="@id/ar_localizing_bottom_sheet_divider" />
+
+            <ImageButton
+                android:id="@+id/ar_localizing_bottom_sheet_select_anchor_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/icon_button"
+                android:padding="4dp"
+                android:src="@drawable/ic_baseline_anchor_24"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ar_localizing_bottom_sheet_divider" />
+
+            <TextView
+                android:id="@+id/ar_localizing_bottom_sheet_currently_resolved"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@id/ar_localizing_bottom_sheet_edit_layout_while_tracking"
+                app:layout_constraintLeft_toRightOf="@id/ar_localizing_bottom_sheet_geospatial_toggle_button"
+                app:layout_constraintRight_toLeftOf="@id/ar_localizing_bottom_sheet_select_floor_button"
+                app:layout_constraintTop_toBottomOf="@id/ar_localizing_bottom_sheet_divider" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ar_localizing_bottom_sheet_edit_layout_while_tracking"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:hint="@string/hint_configure_simultaneous_resolves_while_tracking"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/ar_localizing_bottom_sheet_edit_layout_tracking_interval"
+                app:layout_constraintTop_toBottomOf="@id/ar_localizing_bottom_sheet_auto_mode_button">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ar_localizing_bottom_sheet_edit_resolve_tracking"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:imeOptions="actionDone"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ar_localizing_bottom_sheet_edit_layout_tracking_interval"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:hint="@string/hint_configure_tracking_interval"
+                android:visibility="gone"
+                app:layout_constraintLeft_toRightOf="@id/ar_localizing_bottom_sheet_edit_layout_while_tracking"
+                app:layout_constraintRight_toLeftOf="@id/ar_localizing_bottom_sheet_edit_layout_on_selection"
+                app:layout_constraintTop_toBottomOf="@id/ar_localizing_bottom_sheet_auto_mode_button">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ar_localizing_bottom_sheet_edit_tracking_interval"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:imeOptions="actionDone"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+
+                android:id="@+id/ar_localizing_bottom_sheet_edit_layout_on_selection"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
+                android:hint="@string/hint_configure_simultaneous_resolves_on_selection"
+                android:visibility="gone"
+                app:layout_constraintLeft_toRightOf="@id/ar_localizing_bottom_sheet_edit_layout_tracking_interval"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ar_localizing_bottom_sheet_auto_mode_button">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ar_localizing_bottom_sheet_edit_resolve_around_selected"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:imeOptions="actionDone"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/ar_localizing_bottom_sheet_map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_margin="4dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ar_localizing_bottom_sheet_edit_layout_while_tracking" />
+
+            <TextView
+                android:id="@+id/ar_localizing_bottom_sheet_list_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="4dp"
+                android:text="@string/ar_localization_anchor_list_title"
+                android:textSize="20sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ar_localizing_bottom_sheet_map" />
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/ar_localizing_bottom_sheet_anchor_list_scroll_view"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:overScrollMode="never"
+                app:layout_constraintBottom_toTopOf="@id/ar_localizing_bottom_sheet_search_view"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ar_localizing_bottom_sheet_list_description">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/ar_localizing_bottom_sheet_anchor_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:nestedScrollingEnabled="true" />
+            </androidx.core.widget.NestedScrollView>
+
+            <androidx.appcompat.widget.SearchView
+                android:id="@+id/ar_localizing_bottom_sheet_search_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/ar_localizing_bottom_sheet_search_view_sort_button" />
+
+            <ImageView
+                android:id="@+id/ar_localizing_bottom_sheet_search_view_sort_button"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_margin="12dp"
+                android:src="@drawable/ic_baseline_sort_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/ar_localizing_bottom_sheet_search_view"
+                app:layout_constraintRight_toRightOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
