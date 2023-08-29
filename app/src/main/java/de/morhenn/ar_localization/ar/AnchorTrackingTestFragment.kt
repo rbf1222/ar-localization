@@ -1,5 +1,13 @@
 package de.morhenn.ar_localization.ar
 
+/*
+ 원작자(author) : morhenny
+ 작성자(writer) : rbf1222
+ 날짜(data) : 2023.08.29
+ 수정사항(modification) : 일부분(part)
+ 세부사항(detail) : 102줄의 GeospatialAccuracyView를 삭제함
+ */
+
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -91,7 +99,7 @@ class AnchorTrackingTestFragment : Fragment() {
         sceneView.onArFrame = { frame ->
             earth?.let { earth ->
                 if (earth.trackingState == TrackingState.TRACKING && frame.camera.trackingState == TrackingState.TRACKING) {
-                    //binding.arAnchorTrackingTestGeospatialAccuracy.updateView(earth.cameraGeospatialPose)
+                    //binding.arAnchorTrackingTestGeospatialAccuracy.updateView(earth.cameraGeospatialPose) // 필요없는 부분이라 제외
 
                     if (runningTest) {
                         val distanceFromLastAnchor = GeoUtils.distanceBetweenTwo3dCoordinates(frame.camera.pose.position, lastAnchorPosition)

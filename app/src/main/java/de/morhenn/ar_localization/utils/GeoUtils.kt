@@ -1,11 +1,18 @@
 package de.morhenn.ar_localization.utils
 
+/*
+ 원작자(author) : morhenny
+ 작성자(writer) : rbf1222
+ 날짜(data) : 2023.08.29
+ 수정사항(modification) : 없음(none)
+ */
+
 import com.google.android.gms.maps.model.LatLng
 import de.morhenn.ar_localization.model.GeoPose
 import io.github.sceneview.math.Position
 import kotlin.math.*
 
-object GeoUtils {
+object GeoUtils { // 계산에 사용되는 메소드들을 함축하고 있음.
 
     private const val EARTH_RADIUS = 6371.001 // average earth radius in km
 
@@ -17,10 +24,8 @@ object GeoUtils {
 
         val distanceToRadius = distanceKm / EARTH_RADIUS
 
-        val newLatR = asin(sin(latR) * cos(distanceToRadius) +
-                cos(latR) * sin(distanceToRadius) * cos(bearingR))
-        val newLonR = lngR + atan2(sin(bearingR) * sin(distanceToRadius) * cos(latR),
-            cos(distanceToRadius) - sin(latR) * sin(newLatR))
+        val newLatR = asin(sin(latR) * cos(distanceToRadius) + cos(latR) * sin(distanceToRadius) * cos(bearingR))
+        val newLonR = lngR + atan2(sin(bearingR) * sin(distanceToRadius) * cos(latR), cos(distanceToRadius) - sin(latR) * sin(newLatR))
 
         val latNew = Math.toDegrees(newLatR)
         val lngNew = Math.toDegrees(newLonR)

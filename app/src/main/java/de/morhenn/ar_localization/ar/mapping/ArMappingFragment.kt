@@ -1,8 +1,25 @@
 package de.morhenn.ar_localization.ar.mapping
 
+/*
+ 원작자(author) : morhenny
+ 작성자(writer) : rbf1222
+ 날짜(data) : 2023.08.29
+ 수정사항(modification) : 일부분(part)
+ 세부사항(detail) : 1. onArFrame()에 GeospatialAccuracy 정보가 출력 되도록 변경. (Horizontal,Vertical)
+                2. onArFrameWithEarthTracking()에 updateView 삭제
+                3. 외부의 영향을 받지 않는 방위각 측정(ROTATION_VECTOR)를 위해 onSensorChanged()가 추가.
+                계산 결과로 result값을 사용.(declination(지자기편각)을 추가하여 계산하는 방법과 아닌 방법, 둘 다 가능. 큰 차이가 없음)
+ */
+
+import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
+import android.content.pm.PackageManager
+import android.hardware.*
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +27,14 @@ import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.graphics.rotationMatrix
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import com.google.android.gms.location.*
 import com.google.ar.core.*
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.rendering.Renderable
@@ -25,6 +46,7 @@ import de.morhenn.ar_localization.ar.ArMappingStates.*
 import de.morhenn.ar_localization.ar.ModelName
 import de.morhenn.ar_localization.ar.ModelName.*
 import de.morhenn.ar_localization.ar.MyArInstructions
+import de.morhenn.ar_localization.ar.localizing.ArLocalizingFragment
 import de.morhenn.ar_localization.databinding.DialogNewAnchorBinding
 import de.morhenn.ar_localization.databinding.FragmentArMappingBinding
 import de.morhenn.ar_localization.extensions.loadMaterial
@@ -49,7 +71,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
-class ArMappingFragment : Fragment() {
+class ArMappingFragment : Fragment() , SensorEventListener{
 
     private var arState: ArMappingStates = NOT_INITIALIZED
 
@@ -90,11 +112,43 @@ class ArMappingFragment : Fragment() {
     private var newAnchorText: String = ""
     private var newAnchorFloor: Int = 0
 
+    lateinit var lastLocation: Location
+    private var fusedLocationProviderClient : FusedLocationProviderClient?=null // 현재 위치를 가져오기 위한 변수
+    private val locationRequest = LocationRequest.Builder(Priority.PRIORITY_BALANCED_POWER_ACCURACY, 750L).build()
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            locationResult.lastLocation?.let { newLocation ->
+                lastLocation = newLocation
+            }
+        }
+    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentArMappingBinding.inflate(inflater, container, false)
+    var rotationMatrix = FloatArray(16)
 
-        return binding.root
+    var bearing = FloatArray(3)
+
+    var result = 0.0
+
+    @SuppressLint("MissingPermission")
+    private fun startLocationUpdates() {
+        fusedLocationProviderClient?.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
+    }
+
+    private fun stopLocationUpdates() {
+        fusedLocationProviderClient?.removeLocationUpdates(locationCallback)
+    }
+
+
+   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+       _binding = FragmentArMappingBinding.inflate(inflater, container, false)
+
+       fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+       var sensorManager = context?.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+       var mRot = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+       sensorManager.registerListener(this,mRot,SensorManager.SENSOR_DELAY_NORMAL)
+
+       return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -196,6 +250,7 @@ class ArMappingFragment : Fragment() {
     }
 
     private fun initializeUIElements() {
+        startLocationUpdates()
         binding.arExtendedFab.setOnClickListener {
             when (arState.fabState) {
                 ArMappingFabState.PLACE -> onPlaceClicked()
@@ -417,7 +472,9 @@ class ArMappingFragment : Fragment() {
                     val distanceOfCameraToGround = (cameraPosition.minus(cameraOnPlaneOfPlacementNode)).toVector3().length()
                     val distanceToPlacementNode = ((pNode.position.minus(cameraOnPlaneOfPlacementNode)).toVector3().length()) / 1000 // divided by 1000, because in km
                     val latLng = GeoUtils.getLatLngByDistanceAndBearing(geospatialPose.latitude, geospatialPose.longitude, geospatialPose.heading, distanceToPlacementNode.toDouble())
-                    initialGeoPose = GeoPose(latLng.latitude, latLng.longitude, geospatialPose.altitude - distanceOfCameraToGround, geospatialPose.heading)
+                    //Toast.makeText(activity,"" + geospatialPose.heading +"\n"+result,Toast.LENGTH_SHORT).show() // geosptialPose.heading과 result(ROTATITON_VECTOR) 값을 비교하기 위한 Toast
+                    initialGeoPose = GeoPose(latLng.latitude,latLng.longitude, geospatialPose.altitude - distanceOfCameraToGround, geospatialPose.heading)
+                    // 여기서 처음 앵커의 위치를 지정함. latLng.latitude / longitude
                 }
             }
         }
@@ -458,7 +515,6 @@ class ArMappingFragment : Fragment() {
     }
 
     // 두번째 Anchor가 생성된 이후 (Hosting 종료 이후) 호출 됨.
-    // 첫번째 예시는 174도로 계산됨.
     private fun addAnchorAndMappingPointsToFloorPlan(anchorNode: ArModelNode, cloudAnchorId: String) {
         floorPlan?.let { floorPlan ->
             //Use offset to last placed anchor to calculate latLng and relative x,y,z to the initial Anchor, using the lastAnchors values
@@ -468,17 +524,17 @@ class ArMappingFragment : Fragment() {
             } else {
                 Pair(floorPlan.cloudAnchorList.last(), listOfAnchorNodes.last())
             }
-            Toast.makeText(activity,"1st : "+lastAnchor.first.cloudAnchorId,Toast.LENGTH_SHORT).show()
             val posOffsetToLastAnchor = lastAnchor.second.worldToLocalPosition(anchorNode.worldPosition.toVector3()).toFloat3()
             val xOffset = posOffsetToLastAnchor.x + lastAnchor.first.xToMain
             val yOffset = posOffsetToLastAnchor.y + lastAnchor.first.yToMain
             val zOffset = posOffsetToLastAnchor.z + lastAnchor.first.zToMain
 
-            val newLatLng = GeoUtils.getLatLngByLocalCoordinateOffset(lastAnchor.first.lat, lastAnchor.first.lng, lastAnchor.first.compassHeading, posOffsetToLastAnchor.x, posOffsetToLastAnchor.z)
+            val newLatLng = GeoUtils.getLatLngByLocalCoordinateOffset(lastAnchor.first.lat, lastAnchor.first.lng,
+                lastAnchor.first.compassHeading, posOffsetToLastAnchor.x, posOffsetToLastAnchor.z)
             val newAlt = lastAnchor.first.alt + posOffsetToLastAnchor.y
 
-            val newAnchor = CloudAnchor(newAnchorText, newAnchorFloor, cloudAnchorId, newLatLng.latitude, newLatLng.longitude, newAlt, lastAnchor.first.compassHeading,
-                xOffset, yOffset, zOffset, lastAnchor.first.relativeQuaternion)
+            val newAnchor = CloudAnchor(newAnchorText, newAnchorFloor, cloudAnchorId, newLatLng.latitude, newLatLng.longitude, newAlt,
+                lastAnchor.first.compassHeading, xOffset, yOffset, zOffset, lastAnchor.first.relativeQuaternion)
 
             addMappingPointsAndClearList(lastAnchor.first)
             floorPlan.cloudAnchorList.add(newAnchor)
@@ -564,5 +620,24 @@ class ArMappingFragment : Fragment() {
         private const val TAG = "ArMappingFragment"
         private const val MAPPING_DISTANCE_THRESHOLD = 1 //distance in meters between mapping points
         private const val MIN_HORIZONTAL_GEOSPATIAL_ACCURACY = 1.5
+    }
+
+
+    // ROTATION_VECTOR 방법으로 방위각 측정
+    override fun onSensorChanged(p0: SensorEvent?) {
+        if (p0 != null) {
+            if(p0.sensor.type == Sensor.TYPE_ROTATION_VECTOR){
+
+                SensorManager.getRotationMatrixFromVector(rotationMatrix,p0.values)
+                SensorManager.getOrientation(rotationMatrix,bearing)
+                bearing[0] = Math.toDegrees(bearing[0].toDouble()).toFloat()
+                var declination = GeomagneticField(37F,128F,38F,System.currentTimeMillis()).getDeclination()
+                result = bearing[0].toDouble() // 또는 result = ((bearing[0] + declination + 360F) % 360) <- 큰 차이를 보이지는 않음
+            }
+        }
+    }
+
+    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
+
     }
 }

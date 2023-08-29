@@ -1,5 +1,11 @@
 package de.morhenn.ar_localization.model
 
+/*
+ 원작자(author) : morhenny
+ 작성자(writer) : rbf1222
+ 날짜(data) : 2023.08.29
+ 수정사항(modification) : 없음(none)
+ */
 data class MappingPoint(
     var x: Float = 0.0f,
     var y: Float = 0.0f,

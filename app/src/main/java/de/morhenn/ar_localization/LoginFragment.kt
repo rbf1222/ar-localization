@@ -1,5 +1,12 @@
 package de.morhenn.ar_localization
 
+/*
+ 원작자(author) : morhenny
+ 작성자(writer) : rbf1222
+ 날짜(data) : 2023.08.29
+ 수정사항(modification) : 없음(none)
+ */
+
 import android.app.Activity
 import android.content.Intent
 import android.content.IntentSender
@@ -110,7 +117,7 @@ class LoginFragment : Fragment() {
             .setGoogleIdTokenRequestOptions(
                 BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                     .setSupported(true)
-                    .setServerClientId(BuildConfig.firebase_client_id) //291993008295-anu3s52oppe4vrrkjhkm40git36fb4dv.apps.googleusercontent.com
+                    .setServerClientId(BuildConfig.firebase_client_id)
                     .setFilterByAuthorizedAccounts(false)
                     .build()
             ).build()

@@ -1,5 +1,15 @@
 package de.morhenn.ar_localization.ar.localizing
 
+/*
+ 원작자(author) : morhenny
+ 작성자(writer) : rbf1222
+ 날짜(data) : 2023.08.29
+ 수정사항(modification) : 일부분(part)
+ 세부사항(detail) : 1. calculateUserPose()에 LTE,5G에 따른 수신 정보 RSRQ,RSRP,SINR,signalLev 입력
+                2. 입력된 정보를 토대로 userPositionMarker?.let에서 updateView(셀정보와 위도,경도가 상단에 표시)와
+                지도상에 보여지는 측위 Marker의 색상을 signalLev에 따라 추가
+ */
+
 import android.annotation.SuppressLint
 import android.telephony.TelephonyManager
 import android.app.AlertDialog
@@ -94,6 +104,7 @@ class ArLocalizingFragment : Fragment(), OnMapReadyCallback {
     private var _binding: FragmentArLocalizingBinding? = null
     private val binding get() = _binding!!
 
+    //셀 정보를 위한 변수
     private var RSRQ = 0
     private var RSRP = 0
     private var SINR = 0

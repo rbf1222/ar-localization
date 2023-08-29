@@ -1,5 +1,12 @@
 package de.morhenn.ar_localization.floorPlan
 
+/*
+ 원작자(author) : morhenny
+ 작성자(writer) : rbf1222
+ 날짜(data) : 2023.08.29
+ 수정사항(modification) : 없음(none)
+ */
+
 import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -86,7 +93,7 @@ class FloorPlanViewModel : ViewModel() {
         FirebaseFloorPlanService.updateFloorPlan(editFloorPlan)
     }
 
-    private fun loadDebugFloorPlan() {
+    private fun loadDebugFloorPlan() { // 해당 코드는 호출되지 않음.
         val mainCloudAnchor = CloudAnchor("main", 0, "ua-fc9d89819f61fa990a619445d3248def", 52.5123785, 13.3262760, 70.318, 157.51)
         val floorPlan = FloorPlan(
             "Debug Floor Plan",
